@@ -1,0 +1,72 @@
+services:
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "5050:5050"
+    depends_on:
+      - redis
+      - user-service
+      - product-service
+      - order-service
+      - auth-service
+    environment:
+      - PORT=5050
+      - JWT_SECRET=mySuperSecretKey
+    volumes:
+      - ./gateway:/app
+
+  redis:
+    image: redis:alpine
+    expose:
+      - "6379"
+
+  mongodb:
+    image: mongo:6.0
+    ports:
+      - "27018:27017"
+
+  user-service:
+    build: ./services/user-service
+    ports:
+      - "5051:5051"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/user_db
+    volumes:
+      - ./services/user-service:/app
+
+  product-service:
+    build: ./services/product-service
+    ports:
+      - "5052:5052"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/product_db
+    volumes:
+      - ./services/product-service:/app
+
+  order-service:
+    build: ./services/order-service
+    ports:
+      - "5053:5053"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/order_db
+    volumes:
+      - ./services/order-service:/app
+
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "5054:5054"
+    depends_on:
+      - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/auth_db
+      - JWT_SECRET=mySuperSecretKey
+    volumes:
+      - ./services/auth-service:/app

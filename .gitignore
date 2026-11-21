@@ -1,0 +1,21 @@
+node_modules
+.env
+logs
+dist
+coverage
+
+*.log
+
+.DS_Store
+
+docker-data
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.venv/
+env/
+venv/
